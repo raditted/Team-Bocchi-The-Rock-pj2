@@ -169,7 +169,7 @@ h1 .highlight-blue {
 }
 
 .member-card:nth-child(odd)::before {
-    background: var(--orange);
+    background: yellow;
 }
 
 .member-card:nth-child(even)::before {
@@ -182,7 +182,7 @@ h1 .highlight-blue {
 }
 
 .member-card:nth-child(odd):hover {
-    box-shadow: 0 25px 50px -12px rgba(255, 107, 53, 0.3);
+    box-shadow: 0 25px 50px -12px rgba(221, 214, 4, 0.87);
 }
 
 .member-card:nth-child(even):hover {
@@ -205,7 +205,7 @@ h1 .highlight-blue {
 }
 
 .member-card:nth-child(odd) .profile-ring {
-    background: var(--orange);
+    background: yellow;
 }
 
 .member-card:nth-child(even) .profile-ring {
@@ -280,8 +280,8 @@ h1 .highlight-blue {
 }
 
 .member-card:nth-child(odd) .member-role {
-    background: rgba(255, 107, 53, 0.2);
-    color: var(--orange-light);
+    background: rgba(253, 237, 9, 0.377);
+    color: yellow;
 }
 
 .member-card:nth-child(even) .member-role {
