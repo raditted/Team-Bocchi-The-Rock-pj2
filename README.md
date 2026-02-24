@@ -2,7 +2,7 @@
 <table>
   <tr>
     <td width="40%" valign="top">
-      <img src="https://cdn.discordapp.com/attachments/705419461758419014/1470819382048460880/ae13bac8b8f79ec142388190b4978504.png?ex=698caecb&is=698b5d4b&hm=ef33765ac51e3b37e269d1874a8f27ca992e621b6e7bf34e3f96e206edc5ef0c&" alt="Bocchi Banner" width="100%" style="border-radius: 8px;">
+      <img src="https://github.com/user-attachments/assets/ca7865df-a037-4ea9-b506-7d639df78387" alt="Bocchi Banner" width="100%" style="border-radius: 8px;">
     </td>
     <td width="60%" valign="top">
       <h1>🎸 Bocchi The Rock! ✨ <br> Team 1A-D3</h1>
