@@ -3,4 +3,6 @@
 
 #include "editor_memory.h"
 
+void destroy_editor(Editor *ed);
+
 #endif
