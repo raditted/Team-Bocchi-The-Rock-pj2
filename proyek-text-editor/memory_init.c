@@ -15,7 +15,6 @@ void create_editor(Editor *ed) {
   ed->lines[0] = (char *)malloc(ed->line_capacities[0] * sizeof(char));
   ed->lines[0][0] = '\0';
   ed->line_lengths[0] = 0;
-
   ed->cursor_row = 0;
   ed->cursor_col = 0;
   ed->is_modified = 0;
