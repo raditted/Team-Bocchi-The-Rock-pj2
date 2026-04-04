@@ -19,5 +19,6 @@ typedef struct {
 
 void expand_capacity(Editor *ed);
 void create_editor(Editor *ed);
+void clear_last_remaining_line(Editor *ed);
 
 #endif
