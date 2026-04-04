@@ -21,5 +21,6 @@ void expand_capacity(Editor *ed);
 void create_editor(Editor *ed);
 void clear_last_remaining_line(Editor *ed);
 void insert_char(Editor *ed, char c);
+void shift_chars_right(Editor *ed);
 
 #endif
