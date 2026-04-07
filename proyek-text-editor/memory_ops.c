@@ -60,3 +60,13 @@ void insert_line(Editor *ed) {
   ed->cursor_col = 0;
   ed->is_modified = 1;
 }
+
+void delete_current_line(Editor *ed) {
+  if (ed->line_count == 1) {
+    clear_last_remaining_line(ed);
+    return;
+  }
+  free(ed->lines[ed->cursor_row]);
+  shift_lines_up(ed, ed->cursor_row);
+  ed->line_count--;
+}
