@@ -14,6 +14,23 @@ void run_main_menu(Editor *ed) {
         printf("Pilihan: ");
         scanf("%d", &choice);
     }while (choice != 4);
+    while(getchar() != '\n');
+        
+        switch(choice) {
+            case 1:
+                destroy_editor(ed);
+                create_editor(ed);
+                handle_input(ed);
+                break;
+            case 2: {
+                char fname[260];
+                ask_filename(fname, 260);
+                destroy_editor(ed);
+                create_editor(ed);
+                load_from_file(ed, fname);
+                handle_input(ed);
+                break;
+            }
 
 void ask_filename(char *buffer, int max_len) {
     system("cls");

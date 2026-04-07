@@ -11,4 +11,7 @@ void save_to_file(Editor *ed);
 
 void load_from_file(Editor *ed, const char *filename);
 
+void handle_input(Editor *ed);
+
+void delete_physical_file(Editor *ed)
 #endif

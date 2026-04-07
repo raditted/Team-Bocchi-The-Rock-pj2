@@ -18,3 +18,9 @@ static void clear_console() {
     if (!FillConsoleOutputAttribute(hStdOut, csbi.wAttributes, cellCount, homeCoords, &count)) return;
 
     SetConsoleCursorPosition(hStdOut, homeCoords);
+}
+
+static void set_cursor_pos(int x, int y) {
+    COORD coord = { (SHORT)x, (SHORT)y };
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}

@@ -33,3 +33,16 @@ void load_from_file(Editor *ed, const char *filename) {
         delete_current_line(ed);
         ed->cursor_row--;
     }
+
+    reset_cursor_to_top(ed);
+    ed->is_modified = 0;
+    fclose(fp);
+}
+
+void delete_physical_file(Editor *ed) {
+    if (strlen(ed->filename) > 0) {
+        remove(ed->filename);
+        ed->filename[0] = '\0';
+        ed->is_modified = 1;
+    }
+}
