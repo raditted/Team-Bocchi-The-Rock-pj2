@@ -29,3 +29,11 @@ void shift_lines_down(Editor *ed) {
     ed->line_capacities[i] = ed->line_capacities[i - 1];
   }
 }
+
+void shift_lines_up(Editor *ed, int start_idx) {
+  for (int i = start_idx; i < ed->line_count - 1; i++) {
+    ed->lines[i] = ed->lines[i + 1];
+    ed->line_lengths[i] = ed->line_lengths[i + 1];
+    ed->line_capacities[i] = ed->line_capacities[i + 1];
+  }
+}
