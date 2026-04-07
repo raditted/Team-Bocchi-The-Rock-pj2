@@ -7,4 +7,8 @@ void run_main_menu(Editor *ed);
 
 void ask_filename(char *buffer, int max_len);
 
+void save_to_file(Editor *ed);
+
+void load_from_file(Editor *ed, const char *filename);
+
 #endif
