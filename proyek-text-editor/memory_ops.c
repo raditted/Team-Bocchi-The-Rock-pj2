@@ -37,3 +37,26 @@ void shift_lines_up(Editor *ed, int start_idx) {
     ed->line_capacities[i] = ed->line_capacities[i + 1];
   }
 }
+
+void insert_line(Editor *ed) {
+  if (ed->line_count >= ed->line_capacity)
+    expand_capacity(ed);
+  shift_lines_down(ed);
+
+  int r = ed->cursor_row;
+  int new_r = r + 1;
+
+  int chars_to_move = ed->line_lengths[r] - ed->cursor_col;
+  ed->line_capacities[new_r] = (chars_to_move > 32) ? chars_to_move * 2 : 32;
+  ed->lines[new_r] = (char *)malloc(ed->line_capacities[new_r] * sizeof(char));
+
+  strcpy(ed->lines[new_r], &ed->lines[r][ed->cursor_col]);
+  ed->line_lengths[new_r] = chars_to_move;
+  ed->lines[r][ed->cursor_col] = '\0';
+  ed->line_lengths[r] = ed->cursor_col;
+
+  ed->line_count++;
+  ed->cursor_row++;
+  ed->cursor_col = 0;
+  ed->is_modified = 1;
+}
