@@ -25,5 +25,6 @@ void shift_chars_right(Editor *ed);
 void shift_lines_down(Editor *ed);
 void shift_lines_up(Editor *ed, int start_idx);
 void insert_line(Editor *ed);
+void delete_current_line(Editor *ed);
 
 #endif
