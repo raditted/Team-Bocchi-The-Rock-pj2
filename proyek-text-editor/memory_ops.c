@@ -21,3 +21,11 @@ void insert_char(Editor *ed, char c) {
   ed->cursor_col++;
   ed->is_modified = 1;
 }
+
+void shift_lines_down(Editor *ed) {
+  for (int i = ed->line_count; i > ed->cursor_row + 1; i--) {
+    ed->lines[i] = ed->lines[i - 1];
+    ed->line_lengths[i] = ed->line_lengths[i - 1];
+    ed->line_capacities[i] = ed->line_capacities[i - 1];
+  }
+}
