@@ -3,6 +3,17 @@
 #include <windows.h>
 #include <stdio.h>
 
+void setup_console() {
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD dwMode = 0;
+    GetConsoleMode(hOut, &dwMode);
+    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING; 
+    SetConsoleMode(hOut, dwMode);
+
+    static char render_buffer[65536]; 
+    setvbuf(stdout, render_buffer, _IOFBF, sizeof(render_buffer));
+}
+
 void ask_filename(char *buffer, int max_len) {
     printf("\033[2J\033[1;1H");
     printf("Masukkan nama file: ");
