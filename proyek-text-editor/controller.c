@@ -11,6 +11,11 @@ void ask_filename(char *buffer, int max_len) {
     buffer[strcspn(buffer, "\n")] = 0;
 }
 
+void reset_cursor_to_top(Editor *ed) {
+    ed->cursor_row = 0;
+    ed->cursor_col = 0;
+}
+
 void handle_input(Editor *ed) {
     int ch;
     while(1) {
