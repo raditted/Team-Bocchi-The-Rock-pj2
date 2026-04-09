@@ -42,7 +42,7 @@ void handle_input(Editor *ed) {
                 case 77: move_cursor_right(ed); break;
             }
         } 
-        // --- PEMBARUAN LOGIKA ESC ---
+        //  LOGIKA ESC 
         else if (ch == 27) { 
             if (ed->is_modified) {
                 // Bersihkan layar sementara untuk meminta konfirmasi
@@ -56,7 +56,7 @@ void handle_input(Editor *ed) {
                 if (confirm == 'y' || confirm == 'Y') {
                     break; // Keluar dari editor
                 }
-                // Jika 'n', loop berlanjut dan display_text akan menggambar ulang editor
+                // Jika loop berlanjut dan display_text akan menggambar ulang editor
             } else {
                 break; // Jika tidak ada modifikasi, langsung keluar
             }
@@ -82,33 +82,27 @@ void run_main_menu(Editor *ed) {
         // Bersihkan layar
         printf("\033[2J\033[1;1H"); 
         
-        // ==========================================================
-        // 1. BANNER UTAMA (Kotak Header)
-        // ==========================================================
+        // 1. (Kotak Header)
         printf("\n\n\n"); // Turunkan sedikit dari atap layar
         // Background Cyan Terang (106), Teks Hitam (30)
         printf("\t\033[106;30m                                           \033[0m\n");
         printf("\t\033[106;30m        === Text Editor Bocchi ===         \033[0m\n");
         printf("\t\033[106;30m                                           \033[0m\n\n");
 
-        // ==========================================================
-        // 2. DAFTAR MENU (Gaya Tombol Keycap)
-        // ==========================================================
+        // 2. DAFTAR MENU 
         printf("\t\033[90m Silakan pilih menu navigasi:\033[0m\n\n"); // Teks instruksi Abu-abu
 
-        // Angka menu dibungkus background abu-abu gelap (100) seperti tombol
+        // abu gelap (100)
         printf("\t  \033[100;97m 1 \033[0m  Buat File Baru\n\n");
         printf("\t  \033[100;97m 2 \033[0m  Buka File\n\n");
         printf("\t  \033[100;97m 3 \033[0m  Hapus File Fisik\n\n");
         printf("\t  \033[100;97m 4 \033[0m  Keluar dari Program\n\n");
 
-        // ==========================================================
-        // 3. AREA INPUT PROMPT
-        // ==========================================================
-        // Tanda panah Cyan (36) untuk menuntun mata pengguna
+        // AREA INPUT PROMPT
+        // Tanda panah Cyan (36)
         printf("\t\033[36m > Pilihan Anda: \033[0m");
 
-        // PELATUK: Siram teks menu ke layar agar user bisa melihatnya!
+        // teks menu ke layar 
         fflush(stdout); 
 
         choice = _getch();
@@ -141,7 +135,7 @@ void run_main_menu(Editor *ed) {
             system("pause"); 
         }
         else if (choice == '4') {
-            // Peringatan di level menu dengan gaya lencana MERAH (41)
+            // Peringatan 
             if (ed->is_modified) {
                 printf("\n\n\t\033[41;97m PERINGATAN \033[0m Ada file yang belum di-save! Yakin tutup aplikasi? (y/n): ");
                 fflush(stdout); 

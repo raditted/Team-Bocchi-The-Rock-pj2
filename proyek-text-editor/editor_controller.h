@@ -3,7 +3,6 @@
 
 #include "editor_navigation.h"
 
-// Fungsi Publik Anggota 3 (Total: 8)
 void run_main_menu(Editor *ed);
 void ask_filename(char *buffer, int max_len);
 void handle_input(Editor *ed);

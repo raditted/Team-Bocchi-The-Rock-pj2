@@ -22,11 +22,11 @@ void load_from_file(Editor *ed, const char *filename) {
     while (fgets(buffer, sizeof(buffer), fp)) {
         buffer[strcspn(buffer, "\n")] = 0;
         
-        // Load karakter satu per satu agar divalidasi oleh batasan statis
+        // Load karakter satu per satu 
         for(int i = 0; buffer[i] != '\0'; i++) {
             insert_char(ed, buffer[i]);
         }
-        // Jangan paksa baris baru jika load file sudah mencapai mentok bawah
+        // jika load file sudah mentok
         if (!is_buffer_full(ed)) {
             insert_line(ed);
         }
@@ -45,14 +45,14 @@ void load_from_file(Editor *ed, const char *filename) {
 void delete_physical_file(Editor *ed) {
     char target_file[260];
     
-    // 1. Panggil UI untuk menanyakan nama file yang ingin dihapus
+    // Panggil UI 
     ask_filename(target_file, 260); 
     
-    // 2. Fungsi remove() bawaan C akan mereturn 0 jika file sukses terhapus
+    // mereturn 0 jika file sukses terhapus
     if (remove(target_file) == 0) {
         printf("\n[SUKSES] File '%s' berhasil dihapus dari komputer.\n", target_file);
         
-        // 3. Jika file yang dihapus kebetulan sedang terbuka di editor saat ini, reset statusnya
+        // Jika file yang dihapus kebetulan sedang terbuka di editor saat ini, reset statusnya
         if (strcmp(ed->filename, target_file) == 0) {
             ed->filename[0] = '\0';
             ed->is_modified = 1;
