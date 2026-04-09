@@ -3,6 +3,14 @@
 #include <windows.h>
 #include <stdio.h>
 
+void ask_filename(char *buffer, int max_len) {
+    printf("\033[2J\033[1;1H");
+    printf("Masukkan nama file: ");
+    fflush(stdout); 
+    fgets(buffer, max_len, stdin);
+    buffer[strcspn(buffer, "\n")] = 0;
+}
+
 void handle_input(Editor *ed) {
     int ch;
     while(1) {
