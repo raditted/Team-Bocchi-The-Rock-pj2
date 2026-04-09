@@ -41,23 +41,3 @@ void load_from_file(Editor *ed, const char *filename) {
     ed->is_modified = 0;
     fclose(fp);
 }
-
-void delete_physical_file(Editor *ed) {
-    char target_file[260];
-    
-    // Panggil UI 
-    ask_filename(target_file, 260); 
-    
-    // mereturn 0 jika file sukses terhapus
-    if (remove(target_file) == 0) {
-        printf("\n[SUKSES] File '%s' berhasil dihapus dari komputer.\n", target_file);
-        
-        // Jika file yang dihapus kebetulan sedang terbuka di editor saat ini, reset statusnya
-        if (strcmp(ed->filename, target_file) == 0) {
-            ed->filename[0] = '\0';
-            ed->is_modified = 1;
-        }
-    } else {
-        printf("\n[GAGAL] File '%s' tidak ditemukan atau sistem menolak akses!\n", target_file);
-    }
-}
