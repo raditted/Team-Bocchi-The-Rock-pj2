@@ -65,7 +65,7 @@ void handle_input(Editor *ed) {
             else if (ch == 27) { // Tombol ESC
                 if (ed->is_modified) {
                     printf("\033[2J\033[1;1H");
-                    printf("\n  [PERINGATAN]\n");
+                    printf("\n\033[31m[PERINGATAN]\033[0m\n");
                     printf("  Ada perubahan yang belum di-save!\n");
                     printf("  Yakin ingin keluar ke menu utama? (y/n): ");
                     fflush(stdout);
