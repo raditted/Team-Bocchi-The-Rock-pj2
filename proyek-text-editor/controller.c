@@ -98,15 +98,26 @@ void run_main_menu(Editor *ed) {
             handle_input(ed);   
             printf("\033[?1049l");  
         }
-        else if (choice == '2') {
+       else if (choice == '2') {
             char fname[260];
             ask_filename(fname, 260);
-            destroy_editor(ed);
-            load_from_file(ed, fname);
             
-            printf("\033[?1049h");  
-            handle_input(ed);
-            printf("\033[?1049l");  
+            if (strlen(fname) > 0) { 
+                FILE *file_check = fopen(fname, "r");  
+                if (file_check == NULL) {
+                    printf("\033[2J\033[1;1H\n\n");
+                    printf("\t\033[41;97m ERROR \033[0m File '%s' tidak ditemukan!\n", fname);
+                    fflush(stdout);
+                    Sleep(1500); 
+                } else {
+                    fclose(file_check);
+                    destroy_editor(ed);
+                    load_from_file(ed, fname);
+                    printf("\033[?1049h");  
+                    handle_input(ed);
+                    printf("\033[?1049l");  
+                }
+            }
         }
         else if (choice == '3') {
             printf("\033[2J\033[1;1H\n\n");
