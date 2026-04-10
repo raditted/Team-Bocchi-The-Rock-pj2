@@ -29,70 +29,42 @@ void ask_filename(char *buffer, int max_len) {
 
 void handle_input(Editor *ed) {
     int ch;
-    int last_width = 0, last_height = 0;
-    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-
-    // Render pertama kali saat masuk
-    display_text(ed);
-
     while(1) {
-  
-        CONSOLE_SCREEN_BUFFER_INFO csbi;
-        GetConsoleScreenBufferInfo(hStdOut, &csbi);
-        int current_width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-        int current_height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-
-        // 2.Jika ukuran berubah (Minimize/Maximize)
-        if (current_width != last_width || current_height != last_height) {
-            display_text(ed);
-            last_width = current_width;
-            last_height = current_height;
-        }
-
-        // 3. Cek apakah ada tombol yang ditekan saat ini
-        if (_kbhit()) {
+        display_text(ed); 
+        ch = _getch();    
+        
+        if (ch == 0 || ch == 224) { 
             ch = _getch(); 
-            
-            if (ch == 0 || ch == 224) { 
-                ch = _getch(); 
-                switch(ch) {
-                    case 72: move_cursor_up(ed); break;
-                    case 80: move_cursor_down(ed); break;
-                    case 75: move_cursor_left(ed); break;
-                    case 77: move_cursor_right(ed); break;
-                }
-            } 
-            else if (ch == 27) { // Tombol ESC
-                if (ed->is_modified) {
-                    printf("\033[2J\033[1;1H");
-                    printf("\n\033[31m[PERINGATAN]\033[0m\n");
-                    printf("  Ada perubahan yang belum di-save!\n");
-                    printf("  Yakin ingin keluar ke menu utama? (y/n): ");
-                    fflush(stdout);
-                    
-                    int confirm = _getch();
-                    if (confirm == 'y' || confirm == 'Y') break; 
-                } else {
-                    break; 
-                }
-            } 
-            else if (ch == 19) { save_to_file(ed); } // Ctrl+S
-            else if (ch == 4)  { // Ctrl+D untuk Hapus Baris
-                delete_current_line(ed); 
-                ed->cursor_col = 0; 
-                ed->is_modified = 1; 
-            } 
-            else if (ch == 8)  { delete_char(ed); } // Backspace
-            else if (ch == 13) { insert_line(ed); } // Enter
-            else if (ch >= 32 && ch <= 126) { insert_char(ed, (char)ch); }
-
-            // Paksa render ulang setelah input memodifikasi status memori
-            display_text(ed);
-            
-        } else {
-            // program tidak memakan 100% CPU
-            Sleep(20); 
-        }
+            switch(ch) {
+                case 72: move_cursor_up(ed); break;
+                case 80: move_cursor_down(ed); break;
+                case 75: move_cursor_left(ed); break;
+                case 77: move_cursor_right(ed); break;
+            }
+        } 
+        else if (ch == 27) { 
+            if (ed->is_modified) {
+                printf("\033[2J\033[1;1H");
+                printf("\n\033[31m[PERINGATAN]\033[0m\n");
+                printf("Ada perubahan yang belum di-save!\n");
+                printf("Yakin ingin keluar ke menu utama? (y/n): ");
+                fflush(stdout);
+                
+                int confirm = _getch();
+                if (confirm == 'y' || confirm == 'Y') break; 
+            } else {
+                break; 
+            }
+        } 
+        else if (ch == 19) { save_to_file(ed); } 
+        else if (ch == 4)  { 
+            delete_current_line(ed); 
+            ed->cursor_col = 0; 
+            ed->is_modified = 1; 
+        } 
+        else if (ch == 8)  { delete_char(ed); } 
+        else if (ch == 13) { insert_line(ed); } 
+        else if (ch >= 32 && ch <= 126) { insert_char(ed, (char)ch); }
     }
 }
 
@@ -105,7 +77,7 @@ void run_main_menu(Editor *ed) {
         
         printf("\n\n\n"); 
         printf("\t\033[106;30m                                           \033[0m\n");
-        printf("\t\033[106;30m         === Text Editor Bocchi ===        \033[0m\n");
+        printf("\t\033[106;30m        === Text Editor Bocchi ===         \033[0m\n");
         printf("\t\033[106;30m                                           \033[0m\n\n");
 
         printf("\t\033[90m Silakan pilih menu navigasi:\033[0m\n\n"); 
@@ -142,6 +114,5 @@ void run_main_menu(Editor *ed) {
             fflush(stdout); 
             system("pause"); 
         }
-        
     } while (choice != '4');
 }
