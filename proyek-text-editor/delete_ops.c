@@ -1,9 +1,11 @@
 #include "editor_navigation.h" 
  
+// untuk mereset seluruh isi teks (membersihkan editor)
 void destroy_editor(Editor *ed) { 
     create_editor(ed);
 } 
- 
+
+// untuk menggeser sisa karakter ke arah kiri setelah ada karakter yang dihapus
 void shift_chars_left(Editor *ed) { 
     int r = ed->cursor_row; 
     int c = ed->cursor_col; 
@@ -14,6 +16,8 @@ void shift_chars_left(Editor *ed) {
     ed->line_lengths[r]--; 
 } 
  
+// untuk menggabungkan teks baris saat ini ke bagian akhir baris sebelumnya
+// (Dipanggil ketika user menekan backspace pada posisi awal kolom/ujung kiri baris)
 void merge_with_prev_line(Editor *ed) { 
     int r = ed->cursor_row; 
     int prev_r = r - 1; 
@@ -33,6 +37,7 @@ return;
     ed->is_modified = 1; 
 } 
  
+// untuk menangani event ketika tombol 'Backspace' ditekan
 void delete_char(Editor *ed) { 
     if (ed->cursor_col > 0) { 
         shift_chars_left(ed); 
