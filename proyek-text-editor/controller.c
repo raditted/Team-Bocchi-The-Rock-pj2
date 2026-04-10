@@ -134,13 +134,5 @@ void run_main_menu(Editor *ed) {
             fflush(stdout); 
             system("pause"); 
         }
-        else if (choice == '4') {
-            // Peringatan 
-            if (ed->is_modified) {
-                printf("\n\n\t\033[41;97m PERINGATAN \033[0m Ada file yang belum di-save! Yakin tutup aplikasi? (y/n): ");
-                fflush(stdout); 
-                if (_getch() != 'y') choice = 0; 
-            }
-        }
     } while (choice != '4');
 }
