@@ -37,3 +37,34 @@ void sisip_baris_baru(Editor *ed) {
     ed->cursor_col_idx = 0;
     ed->sudah_diubah = 1;
 }
+
+// Tombol Backspace di awal baris: gabung dengan baris atasnya
+void hapus_dan_gabung_baris(Editor *ed) {
+  if (ed->cursor_line->prev == NULL)
+    return; // Baris pertama tidak bisa digabung atas
+
+  LineNode *baris_bawah = ed->cursor_line;
+  LineNode *baris_atas = baris_bawah->prev;
+
+  // Simpan posisi kolom terakhir untuk kursor
+  int kolom_lama = baris_atas->panjang;
+  CharNode *kursor_baru = baris_atas->tail_char;
+
+  // 1. Gabungkan rentetan karakter (Low Coupling: Panggil modul karakter)
+  gabung_isi_baris(baris_atas, baris_bawah);
+
+  // 2. Putus ikatan wadah baris bawah dari DLL (Low Coupling: Panggil modul
+  // node)
+  lepas_node_baris(ed, baris_bawah);
+
+  // Bebaskan memori wadah baris (isinya aman karena pointer sudah diputus di
+  // gabung_isi_baris)
+  free(baris_bawah);
+
+  // 3. Kembalikan kursor ke sambungan
+  ed->cursor_line = baris_atas;
+  ed->cursor_char = kursor_baru;
+  ed->cursor_row_idx--;
+  ed->cursor_col_idx = kolom_lama;
+  ed->sudah_diubah = 1;
+}
