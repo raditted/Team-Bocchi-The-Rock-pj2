@@ -71,8 +71,6 @@ void hapus_karakter(Editor *ed) {
   ed->sudah_diubah = 1;
 }
 
-// === Fungsi Pembantu untuk Memindah Rentetan Karakter Antar Baris ===
-
 // Memindahkan sisa karakter dari titik potong ke baris baru (dipakai saat
 // tombol Enter)
 void pindah_sisa_karakter(LineNode *lama, LineNode *baru,
@@ -110,8 +108,6 @@ void pindah_sisa_karakter(LineNode *lama, LineNode *baru,
   }
 }
 
-// Menggabungkan seluruh isi karakter baris bawah ke baris atas (dipakai saat
-// Backspace di awal baris)
 void gabung_isi_baris(LineNode *atas, LineNode *bawah) {
   if (bawah->panjang == 0)
     return;
