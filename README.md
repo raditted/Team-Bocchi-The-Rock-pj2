@@ -97,34 +97,39 @@ Setiap LineNode memiliki rantai **CharNode** (horizontal) yang merepresentasikan
 Contoh dokumen berisi 3 baris dengan isi "Hai", "Ok", dan baris kosong:
 
 ```
-  [ STRUKTUR VERTIKAL ]              [ STRUKTUR HORIZONTAL ]
-    (Kumpulan Baris)                   (Kumpulan Karakter)
+ Editor.head
+      |
+      v                 CharNode
+ +-----------+       +-----+     +-----+     +-----+
+ | LineNode 1| ----> | 'H' | <-> | 'a' | <-> | 'i' |
+ | panjang: 3|       +-----+     +-----+     +-----+
+ +-----------+
+      |  ^
+ next |  | prev
+      v  |
+ +-----------+       +-----+     +-----+
+ | LineNode 2| ----> | 'O' | <-> | 'k' |
+ | panjang: 2|       +-----+     +-----+
+ +-----------+
+      |  ^
+ next |  | prev
+      v  |
+ +-----------+
+ | LineNode 3|       (kosong, head_char = NULL)
+ | panjang: 0|
+ +-----------+
+      |
+      v
+    NULL
 
-    +------------------+          +---------+  +---------+  +---------+
-    | LineNode (Baris 1)|         |   'H'   |  |   'a'   |  |   'i'   |
-    | head_char     -------->    | prev:N  |<-->| prev    |<-->| prev  |
-    | tail_char       --|--+     | next    |  | next    |  | next:N  |
-    | prev: NULL     |  | |     +---------+  +---------+  +---------+
-    | next: Line 2   |  | |                                     ^
-    +------------------+  | +------(tail_char menunjuk 'i')-----+
-          |               |
-          | next          | prev
-          v               |
-    +------------------+          +---------+  +---------+
-    | LineNode (Baris 2)|         |   'O'   |  |   'k'   |
-    | head_char     -------->    | prev:N  |<-->| prev    |
-    | tail_char       --|--+     | next    |  | next:N  |
-    | prev: Line 1   |  | |     +---------+  +---------+
-    | next: Line 3   |  | |                        ^
-    +------------------+  | +---(tail_char 'k')----+
-          |               |
-          | next          | prev
-          v               |
-    +------------------+
-    | LineNode (Baris 3)|  head: NULL (Karakter Kosong)
-    | prev: Line 2   |  tail: NULL
-    | next: NULL     |  panjang: 0
-    +------------------+
+ Editor.tail = LineNode 3
+
+ Keterangan:
+ - Panah ---->  dari LineNode ke CharNode = pointer head_char
+ - Panah <->   antar CharNode            = pointer prev/next (horizontal)
+ - Panah | antar LineNode                 = pointer prev/next (vertikal)
+ - tail_char LineNode 1 menunjuk CharNode 'i'
+ - tail_char LineNode 2 menunjuk CharNode 'k'
 ```
 
 ### Detail Node
@@ -443,7 +448,7 @@ Menggunakan DLL dua dimensi memberikan pemahaman mendalam tentang trade-off anta
 
 ### Soft-Wrap dan Perbedaan Baris Logika vs Visual
 
-Implementasi soft-wrap memperkenalkan konsep bahwa satu baris logika dalam data bisa merepresentasikan lebih dari satu baris visual di layar. Seluruh subsistem yang berinteraksi dengan tampilan — scrolling, navigasi kursor, dan rendering — harus konsisten dalam membedakan kedua konsep ini. Bug yang paling sulit ditemukan berasal dari pencampuran hitungan baris logika dan baris visual dalam satu perhitungan.
+Implementasi soft-wrap memperkenalkan konsep bahwa satu baris logika dalam data bisa merepresentasikan lebih dari satu baris visual di layar. Seluruh subsistem yang berinteraksi dengan tampilan scrolling, navigasi kursor, dan rendering harus konsisten dalam membedakan kedua konsep ini. Bug yang paling sulit ditemukan berasal dari pencampuran hitungan baris logika dan baris visual dalam satu perhitungan.
 
 ### Anti-Flicker Rendering
 
