@@ -1,4 +1,4 @@
-#include "navigasi.h"
+#include "RaditNavigasi.h"
 
 void kursor_kiri(Editor *ed) {
   if (ed->cursor_char != NULL) {
