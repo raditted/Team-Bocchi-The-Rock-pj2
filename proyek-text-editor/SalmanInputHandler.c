@@ -1,8 +1,8 @@
 #include "SalmanInputHandler.h"
-#include "buffer_baris.h"
+#include "RaditBufferBaris.h"
 #include "SalmanBufferKarakter.h"
 #include "SalmanFileIo.h"
-#include "navigasi.h"
+#include "RaditNavigasi.h"
 #include "HaikalTampilan.h"
 
 void handle_input(Editor *ed) {

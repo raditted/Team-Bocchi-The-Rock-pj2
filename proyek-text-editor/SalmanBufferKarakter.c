@@ -1,6 +1,6 @@
 #include "SalmanBufferKarakter.h"
 #include "HaikalBufferNode.h"
-#include "buffer_baris.h"
+#include "RaditBufferBaris.h"
 
 // Menyisipkan karakter di posisi kursor
 void sisip_karakter(Editor *ed, char c) {

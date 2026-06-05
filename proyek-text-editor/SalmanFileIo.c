@@ -1,5 +1,5 @@
 #include "SalmanFileIo.h"
-#include "buffer_baris.h"
+#include "RaditBufferBaris.h"
 #include "SalmanBufferKarakter.h"
 
 int nama_valid(const char *s) {
