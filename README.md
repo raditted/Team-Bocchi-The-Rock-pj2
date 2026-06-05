@@ -31,7 +31,6 @@
   </tr>
 </table>
 
-```
 # Text Editor Bocchi
 
 Text Editor Bocchi adalah text editor berbasis **Command-Line Interface (CLI)** yang dibangun menggunakan bahasa C murni. Editor ini menggunakan struktur data **2D Doubly Linked List** sebagai representasi internal dokumen, di mana seluruh alokasi memori dilakukan secara **dinamis** menggunakan `malloc()` dan `free()` tanpa array statis.
@@ -59,29 +58,29 @@ Setiap karakter yang diketik pengguna disimpan sebagai node individual di memori
 
 ### Haikal
 
-| Modul | File |
-|-------|------|
+| Modul       | File                        |
+| ----------- | --------------------------- |
 | Buffer Node | `HaikalBufferNode.c` / `.h` |
-| Tampilan | `HaikalTampilan.c` / `.h` |
+| Tampilan    | `HaikalTampilan.c` / `.h`   |
 
 Mengelola pembuatan dan penghapusan node dasar (`CharNode`, `LineNode`), operasi penyambungan dan pelepasan node baris pada rantai DLL, serta seluruh sistem rendering layar yang mencakup header, konten editor dengan soft-wrap, footer status bar, mekanisme scrolling vertikal, dan penempatan kursor konsol menggunakan Win32 API.
 
 ### Radit
 
-| Modul | File |
-|-------|------|
+| Modul        | File                        |
+| ------------ | --------------------------- |
 | Buffer Baris | `RaditBufferBaris.c` / `.h` |
-| Navigasi | `RaditNavigasi.c` / `.h` |
+| Navigasi     | `RaditNavigasi.c` / `.h`    |
 
 Mengelola inisialisasi dan reset editor, operasi tingkat baris seperti penyisipan baris baru saat Enter, penggabungan baris saat Backspace di awal baris, penghapusan baris penuh dengan Ctrl+D, serta seluruh logika navigasi kursor empat arah yang mendukung perpindahan antar baris visual dalam satu baris logika (soft-wrap aware).
 
 ### Salman
 
-| Modul | File |
-|-------|------|
+| Modul           | File                            |
+| --------------- | ------------------------------- |
 | Buffer Karakter | `SalmanBufferKarakter.c` / `.h` |
-| File I/O | `SalmanFileIo.c` / `.h` |
-| Input Handler | `SalmanInputHandler.c` / `.h` |
+| File I/O        | `SalmanFileIo.c` / `.h`         |
+| Input Handler   | `SalmanInputHandler.c` / `.h`   |
 
 Mengelola penyisipan dan penghapusan karakter individual pada posisi kursor, pemindahan serta penggabungan rentetan karakter antar baris, operasi file berupa simpan/buka/hapus file dari disk dengan validasi nama, serta penanganan seluruh input keyboard termasuk routing ke modul yang sesuai dan tampilan menu utama.
 
@@ -153,74 +152,74 @@ Editor
 
 ### Manajemen Node Dasar (`HaikalBufferNode`)
 
-| Fungsi | Penjelasan |
-|--------|------------|
-| `buat_char_node(c)` | Mengalokasikan satu CharNode baru di heap dengan karakter `c`, pointer prev dan next diinisialisasi NULL |
-| `buat_line_node()` | Mengalokasikan satu LineNode kosong di heap, head/tail char diinisialisasi NULL, panjang 0 |
-| `free_char_nodes(head)` | Membebaskan seluruh rantai CharNode dari head sampai akhir secara iteratif |
-| `free_line_nodes(head)` | Membebaskan seluruh rantai LineNode beserta CharNode di dalamnya |
-| `sisip_node_baris(ed, lama, baru)` | Menyisipkan LineNode baru tepat setelah LineNode lama dalam rantai DLL baris |
-| `lepas_node_baris(ed, hapus)` | Melepaskan LineNode dari rantai DLL tanpa membebaskan memorinya |
+| Fungsi                             | Penjelasan                                                                                               |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `buat_char_node(c)`                | Mengalokasikan satu CharNode baru di heap dengan karakter `c`, pointer prev dan next diinisialisasi NULL |
+| `buat_line_node()`                 | Mengalokasikan satu LineNode kosong di heap, head/tail char diinisialisasi NULL, panjang 0               |
+| `free_char_nodes(head)`            | Membebaskan seluruh rantai CharNode dari head sampai akhir secara iteratif                               |
+| `free_line_nodes(head)`            | Membebaskan seluruh rantai LineNode beserta CharNode di dalamnya                                         |
+| `sisip_node_baris(ed, lama, baru)` | Menyisipkan LineNode baru tepat setelah LineNode lama dalam rantai DLL baris                             |
+| `lepas_node_baris(ed, hapus)`      | Melepaskan LineNode dari rantai DLL tanpa membebaskan memorinya                                          |
 
 ### Tampilan dan Rendering (`HaikalTampilan`)
 
-| Fungsi | Penjelasan |
-|--------|------------|
-| `kursor_ke_awal()` | Memindahkan kursor konsol ke koordinat (0,0) tanpa menghapus layar sebagai teknik anti-flicker |
-| `kursor_ke_posisi(baris, kolom)` | Memindahkan kursor konsol ke posisi tertentu menggunakan Win32 SetConsoleCursorPosition |
-| `tampilkan_kursor()` | Mengaktifkan kursor kedip bawaan konsol Windows |
-| `baris_konten_maks()` | Menghitung jumlah baris visual yang tersedia untuk konten (tinggi layar dikurangi header dan footer) |
-| `baris_visual(baris)` | Menghitung berapa baris visual yang dibutuhkan satu baris logika berdasarkan soft-wrap |
-| `lompat_ke_baris(head, n)` | Melakukan traversal linked list untuk mendapatkan pointer ke LineNode ke-n |
-| `hitung_visual(head, dari, sampai)` | Menghitung total baris visual dari baris logika ke-`dari` hingga ke-`sampai` (eksklusif) |
-| `isi_spasi(buf, dari_kolom)` | Menambahkan spasi padding dari kolom tertentu hingga lebar layar ke buffer string |
-| `tulis_baris(buf, teks)` | Menulis teks, padding spasi, dan newline ke buffer sebagai satu baris penuh |
-| `atur_scroll(ed)` | Mengatur scroll_offset agar kursor selalu terlihat di area konten, mendukung scroll ke bawah dan tarik ke atas |
-| `tampilkan_editor(ed)` | Fungsi utama rendering: menggambar header, konten dengan soft-wrap, baris kosong (~), footer, dan memposisikan kursor |
+| Fungsi                              | Penjelasan                                                                                                            |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `kursor_ke_awal()`                  | Memindahkan kursor konsol ke koordinat (0,0) tanpa menghapus layar sebagai teknik anti-flicker                        |
+| `kursor_ke_posisi(baris, kolom)`    | Memindahkan kursor konsol ke posisi tertentu menggunakan Win32 SetConsoleCursorPosition                               |
+| `tampilkan_kursor()`                | Mengaktifkan kursor kedip bawaan konsol Windows                                                                       |
+| `baris_konten_maks()`               | Menghitung jumlah baris visual yang tersedia untuk konten (tinggi layar dikurangi header dan footer)                  |
+| `baris_visual(baris)`               | Menghitung berapa baris visual yang dibutuhkan satu baris logika berdasarkan soft-wrap                                |
+| `lompat_ke_baris(head, n)`          | Melakukan traversal linked list untuk mendapatkan pointer ke LineNode ke-n                                            |
+| `hitung_visual(head, dari, sampai)` | Menghitung total baris visual dari baris logika ke-`dari` hingga ke-`sampai` (eksklusif)                              |
+| `isi_spasi(buf, dari_kolom)`        | Menambahkan spasi padding dari kolom tertentu hingga lebar layar ke buffer string                                     |
+| `tulis_baris(buf, teks)`            | Menulis teks, padding spasi, dan newline ke buffer sebagai satu baris penuh                                           |
+| `atur_scroll(ed)`                   | Mengatur scroll_offset agar kursor selalu terlihat di area konten, mendukung scroll ke bawah dan tarik ke atas        |
+| `tampilkan_editor(ed)`              | Fungsi utama rendering: menggambar header, konten dengan soft-wrap, baris kosong (~), footer, dan memposisikan kursor |
 
 ### Manajemen Baris (`RaditBufferBaris`)
 
-| Fungsi | Penjelasan |
-|--------|------------|
-| `buat_editor(ed)` | Menginisialisasi struct Editor dengan satu LineNode kosong, semua indeks di-reset ke 0 |
-| `reset_editor(ed)` | Membebaskan seluruh isi editor dan menginisialisasi ulang dari awal |
-| `sisip_baris_baru(ed)` | Memecah baris saat ini di posisi kursor, memindahkan sisa karakter ke baris baru (operasi Enter) |
+| Fungsi                       | Penjelasan                                                                                                         |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `buat_editor(ed)`            | Menginisialisasi struct Editor dengan satu LineNode kosong, semua indeks di-reset ke 0                             |
+| `reset_editor(ed)`           | Membebaskan seluruh isi editor dan menginisialisasi ulang dari awal                                                |
+| `sisip_baris_baru(ed)`       | Memecah baris saat ini di posisi kursor, memindahkan sisa karakter ke baris baru (operasi Enter)                   |
 | `hapus_dan_gabung_baris(ed)` | Menggabungkan baris saat ini dengan baris di atasnya, menyambung rantai karakter (operasi Backspace di awal baris) |
-| `hapus_baris_penuh(ed)` | Menghapus seluruh baris saat ini beserta isinya, memindahkan kursor ke baris terdekat (operasi Ctrl+D) |
+| `hapus_baris_penuh(ed)`      | Menghapus seluruh baris saat ini beserta isinya, memindahkan kursor ke baris terdekat (operasi Ctrl+D)             |
 
 ### Navigasi Kursor (`RaditNavigasi`)
 
-| Fungsi | Penjelasan |
-|--------|------------|
-| `kursor_kiri(ed)` | Memindahkan kursor satu posisi ke kiri; jika di awal baris, pindah ke akhir baris sebelumnya |
-| `kursor_kanan(ed)` | Memindahkan kursor satu posisi ke kanan; jika di akhir baris, pindah ke awal baris berikutnya |
-| `kursor_atas(ed)` | Memindahkan kursor ke atas; mendukung perpindahan antar baris visual dalam satu baris logika yang di-wrap |
+| Fungsi             | Penjelasan                                                                                                 |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- |
+| `kursor_kiri(ed)`  | Memindahkan kursor satu posisi ke kiri; jika di awal baris, pindah ke akhir baris sebelumnya               |
+| `kursor_kanan(ed)` | Memindahkan kursor satu posisi ke kanan; jika di akhir baris, pindah ke awal baris berikutnya              |
+| `kursor_atas(ed)`  | Memindahkan kursor ke atas; mendukung perpindahan antar baris visual dalam satu baris logika yang di-wrap  |
 | `kursor_bawah(ed)` | Memindahkan kursor ke bawah; mendukung perpindahan antar baris visual dalam satu baris logika yang di-wrap |
 
 ### Manajemen Karakter (`SalmanBufferKarakter`)
 
-| Fungsi | Penjelasan |
-|--------|------------|
-| `sisip_karakter(ed, c)` | Menyisipkan CharNode baru setelah posisi kursor, memperbarui rantai DLL karakter dan panjang baris |
-| `hapus_karakter(ed)` | Menghapus CharNode di posisi kursor (Backspace); jika di awal baris, delegasi ke `hapus_dan_gabung_baris` |
-| `pindah_sisa_karakter(lama, baru, titik_potong)` | Memindahkan karakter setelah titik potong dari baris lama ke baris baru, memutus dan menyambung rantai |
-| `gabung_isi_baris(atas, bawah)` | Menggabungkan seluruh rantai karakter baris bawah ke ekor baris atas |
+| Fungsi                                           | Penjelasan                                                                                                |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `sisip_karakter(ed, c)`                          | Menyisipkan CharNode baru setelah posisi kursor, memperbarui rantai DLL karakter dan panjang baris        |
+| `hapus_karakter(ed)`                             | Menghapus CharNode di posisi kursor (Backspace); jika di awal baris, delegasi ke `hapus_dan_gabung_baris` |
+| `pindah_sisa_karakter(lama, baru, titik_potong)` | Memindahkan karakter setelah titik potong dari baris lama ke baris baru, memutus dan menyambung rantai    |
+| `gabung_isi_baris(atas, bawah)`                  | Menggabungkan seluruh rantai karakter baris bawah ke ekor baris atas                                      |
 
 ### Operasi File (`SalmanFileIo`)
 
-| Fungsi | Penjelasan |
-|--------|------------|
-| `nama_valid(s)` | Memvalidasi nama file terhadap karakter ilegal (/ \\ : * ? " < > \|) |
-| `simpan_file(ed)` | Menyimpan dokumen ke file dengan menulis setiap CharNode per baris, meminta nama jika belum ada |
-| `buka_file(ed, nama)` | Membuka file dan membangun ulang struktur DLL dengan membaca karakter satu per satu |
+| Fungsi                 | Penjelasan                                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------------------- |
+| `nama_valid(s)`        | Memvalidasi nama file terhadap karakter ilegal (/ \\ : \* ? " < > \|)                             |
+| `simpan_file(ed)`      | Menyimpan dokumen ke file dengan menulis setiap CharNode per baris, meminta nama jika belum ada   |
+| `buka_file(ed, nama)`  | Membuka file dan membangun ulang struktur DLL dengan membaca karakter satu per satu               |
 | `hapus_file_fisik(ed)` | Menghapus file dari disk menggunakan `remove()`, reset nama jika file yang dihapus sedang terbuka |
 
 ### Penanganan Input (`SalmanInputHandler`)
 
-| Fungsi | Penjelasan |
-|--------|------------|
-| `handle_input(ed)` | Loop utama editor: membaca input keyboard dan mendelegasikan ke fungsi yang sesuai berdasarkan kode tombol |
-| `run_main_menu(ed)` | Menampilkan menu utama dengan opsi buat baru, buka, hapus file, dan keluar |
+| Fungsi              | Penjelasan                                                                                                 |
+| ------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `handle_input(ed)`  | Loop utama editor: membaca input keyboard dan mendelegasikan ke fungsi yang sesuai berdasarkan kode tombol |
+| `run_main_menu(ed)` | Menampilkan menu utama dengan opsi buat baru, buka, hapus file, dan keluar                                 |
 
 ---
 
@@ -396,7 +395,7 @@ gcc -o bocchi main.c HaikalBufferNode.c HaikalTampilan.c RaditBufferBaris.c Radi
 
 .\bocchi.exe
 
-````
+```
 
 ### Linux (GCC)
 
@@ -406,6 +405,7 @@ Program ini menggunakan `<windows.h>` dan `<conio.h>` yang merupakan API khusus 
 2. Ganti fungsi Win32 Console API (`SetConsoleCursorPosition`, `SetConsoleCursorInfo`) dengan ANSI escape sequences
 
 Contoh penggantian untuk `kursor_ke_posisi`:
+
 ```c
 // Windows (asli)
 void kursor_ke_posisi(int baris, int kolom) {
@@ -420,7 +420,7 @@ void kursor_ke_posisi(int baris, int kolom) {
 void kursor_ke_posisi(int baris, int kolom) {
   printf("\033[%d;%dH", baris + 1, kolom + 1);
 }
-````
+```
 
 Setelah modifikasi, compile dengan:
 
