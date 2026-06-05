@@ -75,16 +75,24 @@ void run_main_menu(Editor *ed) {
     if (choice == '1') {
       reset_editor(ed);
       handle_input(ed);
-    } else if (choice == '2') {
+    } } else if (choice == '2') {
       char fname[260];
       system("cls");
       printf("\nMasukkan nama file yang ingin dibuka: ");
       fgets(fname, 260, stdin);
-      fname[strcspn(fname, "\n")] = 0; // Hapus karakter \n di akhir
+      fname[strcspn(fname, "\n")] = 0;
 
-      buka_file(ed, fname);
-      handle_input(ed);
-    } else if (choice == '3') {
+      FILE *cek = fopen(fname, "r");
+      if (cek == NULL) {
+        printf("File '%s' tidak ditemukan!\n", fname);
+        system("pause");
+      } else {
+        fclose(cek);
+        buka_file(ed, fname);
+        handle_input(ed);
+      }
+    }
+    else if (choice == '3') {
       hapus_file_fisik(ed);
       system("pause");
     } else if (choice == '4') {
