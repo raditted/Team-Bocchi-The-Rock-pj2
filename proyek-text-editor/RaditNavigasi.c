@@ -77,3 +77,49 @@ void kursor_atas(Editor *ed) {
     ed->cursor_col_idx = i;
   }
 }
+
+void kursor_bawah(Editor *ed) {
+  // mulai hitung posisi visual kursor saat ini
+  int visual_col = ed->cursor_col_idx % LEBAR_LAYAR;
+  int visual_row = ed->cursor_col_idx / LEBAR_LAYAR;
+  int pjg = ed->cursor_line->panjang;
+  int last_vrow = (pjg > 0) ? (pjg - 1) / LEBAR_LAYAR : 0;
+
+  if (visual_row < last_vrow) {
+    // case 1: masih ada baris visual di BAWAH dalam baris logika yang SAMA
+    // turun 1 baris visual (maju 80 kolom)
+    int target = (visual_row + 1) * LEBAR_LAYAR + visual_col;
+    if (target > pjg)
+      target = pjg; // snap ke akhir kalo barisnya pendek
+
+    CharNode *temp = ed->cursor_line->head_char;
+    int i = 0;
+    ed->cursor_char = NULL;
+    while (temp != NULL && i < target) {
+      ed->cursor_char = temp;
+      temp = temp->next;
+      i++;
+    }
+    ed->cursor_col_idx = i;
+
+  } else if (ed->cursor_line->next != NULL) {
+    // case 2: udah di baris visual paling bawah lalu pindah ke baris logika bawah
+    ed->cursor_line = ed->cursor_line->next;
+    ed->cursor_row_idx++;
+
+    // targetnya baris visual pertama (row 0) + kolom visual saat ini
+    int target = visual_col;
+    if (target > ed->cursor_line->panjang)
+      target = ed->cursor_line->panjang; // snap ke akhir kalo barisnya pendek
+
+    CharNode *temp = ed->cursor_line->head_char;
+    int i = 0;
+    ed->cursor_char = NULL;
+    while (temp != NULL && i < target) {
+      ed->cursor_char = temp;
+      temp = temp->next;
+      i++;
+    }
+    ed->cursor_col_idx = i;
+  }
+}
