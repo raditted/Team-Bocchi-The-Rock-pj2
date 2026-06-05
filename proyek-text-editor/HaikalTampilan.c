@@ -1,4 +1,4 @@
-#include "tampilan.h"
+#include "HaikalTampilan.h"
 #include <windows.h>
 
 void kursor_ke_awal() {
