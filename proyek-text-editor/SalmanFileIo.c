@@ -28,6 +28,10 @@ void simpan_file(Editor *ed) {
     } while (!nama_valid(ed->nama_file) || strlen(ed->nama_file) == 0);
   }
 
+  FILE *fp = fopen(ed->nama_file, "w");
+  if (!fp)
+    return;
+
   // Tulis ke file per LineNode, lalu per CharNode
   LineNode *baris = ed->head;
   while (baris != NULL) {
