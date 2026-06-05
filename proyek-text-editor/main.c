@@ -1,6 +1,6 @@
 #include "buffer_baris.h"
-#include "buffer_node.h"
-#include "input_handler.h"
+#include "HaikalBufferNode.h"
+#include "SalmanInputHandler.h"
 
 // Entry point untuk program
 int main() {
