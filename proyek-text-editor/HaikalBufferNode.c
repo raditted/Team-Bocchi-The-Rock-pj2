@@ -1,4 +1,4 @@
-#include "buffer_node.h"
+#include "HaikalBufferNode.h"
 
 // Membuat node karakter tunggal
 CharNode *buat_char_node(char c) {
