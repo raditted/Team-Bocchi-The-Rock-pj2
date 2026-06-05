@@ -7,7 +7,7 @@
 #include <string.h>
 #define MAKS_NAMA_FILE 25
 #define TINGGI_LAYAR 25
-#define LEBAR_LAYAR 80
+#define LEBAR_LAYAR 60
 #define BARIS_HEADER 3 // Jumlah baris untuk header (judul editor)
 #define BARIS_FOOTER 3 // Jumlah baris untuk footer (status bar)
 

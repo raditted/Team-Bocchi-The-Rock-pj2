@@ -96,20 +96,41 @@ void atur_scroll(Editor *ed) {
   }
 
   // Tarik ke atas jika ada ruang kosong di bawah
-  int total_baris = 0;
-  LineNode *tmp = ed->head;
-  while (tmp != NULL) {
-    total_baris++;
-    tmp = tmp->next;
-  }
-
-  if (ed->scroll_offset > 0 && total_baris - ed->scroll_offset < maks) {
-    ed->scroll_offset = total_baris - maks;
-    if (ed->scroll_offset < 0)
-      ed->scroll_offset = 0;
+  // Tarik ke atas jika ada ruang kosong di bawah
+  if (ed->scroll_offset > 0) {
+    int total_visual = 0;
+    LineNode *tmp = ed->head;
+    int i = 0;
+    // Lompat ke scroll_offset
+    while (tmp != NULL && i < ed->scroll_offset) {
+      tmp = tmp->next;
+      i++;
+    }
+    // Hitung total baris VISUAL dari scroll_offset sampai akhir
+    while (tmp != NULL) {
+      total_visual += baris_visual(tmp);
+      tmp = tmp->next;
+    }
+    // Jika visual masih kurang dari maks, tarik scroll ke atas
+    while (ed->scroll_offset > 0) {
+      // Cari baris tepat di ATAS scroll_offset saat ini
+      LineNode *tmp = ed->head;
+      int i = 0;
+      while (tmp != NULL && i < ed->scroll_offset - 1) {
+        tmp = tmp->next;
+        i++;
+      }
+      int extra = baris_visual(tmp);
+      // Cek apakah masih muat kalau ditambahkan
+      if (total_visual + extra <= maks) {
+        ed->scroll_offset--;
+        total_visual += extra;
+      } else {
+        break; // tidak muat, berhenti
+      }
+    }
   }
 }
-
 void tampilkan_editor(Editor *ed) {
   // 1. Anti-flicker: geser kursor ke awal tanpa hapus layar
   kursor_ke_awal();
@@ -122,9 +143,11 @@ void tampilkan_editor(Editor *ed) {
   int maks = baris_konten_maks();
 
   // --- HEADER ---
-  tulis_baris(buffer, "============================================");
-  tulis_baris(buffer, "         TEXT EDITOR BOCCHI (2D DLL)");
-  tulis_baris(buffer, "============================================");
+  tulis_baris(buffer,
+              "============================================================");
+  tulis_baris(buffer, "              TEXT EDITOR BOCCHI (2D DLL)");
+  tulis_baris(buffer,
+              "============================================================");
 
   // --- ISI EDITOR ---
   // Lompat ke baris pertama yang terlihat (scroll_offset)
@@ -168,13 +191,13 @@ void tampilkan_editor(Editor *ed) {
         kolom = 0;
       }
     }
-
-    // Padding spasi + newline
-    isi_spasi(buffer, kolom);
-    strcat(buffer, "\n");
-    baris_tercetak++;
-
-    baris = baris->next;
+    // isi padding + newline
+    if (baris_tercetak < maks) {
+      isi_spasi(buffer, kolom);
+      strcat(buffer, "\n");
+      baris_tercetak++;
+    }
+    baris = baris->next; // <--- TAMBAHKAN KEMBALI BARIS INI
   }
 
   // --- PADDING BARIS KOSONG (tanda ~) ---
@@ -184,7 +207,8 @@ void tampilkan_editor(Editor *ed) {
   }
 
   // --- FOOTER / STATUS BAR ---
-  tulis_baris(buffer, "--------------------------------------------");
+  tulis_baris(buffer,
+              "------------------------------------------------------------");
 
   char status[512];
   sprintf(status, "File: %s %s  | Baris ke-%d | Kolom ke-%d",
