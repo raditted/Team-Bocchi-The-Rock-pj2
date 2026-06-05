@@ -1,4 +1,4 @@
-#include "buffer_karakter.h"
+#include "SalmanBufferKarakter.h"
 #include "HaikalBufferNode.h"
 #include "buffer_baris.h"
 

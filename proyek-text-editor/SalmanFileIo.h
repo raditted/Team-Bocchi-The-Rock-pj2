@@ -1,5 +1,5 @@
-#ifndef FILE_IO_H
-#define FILE_IO_H
+#ifndef SALMAN_FILE_IO_H
+#define SALMAN_FILE_IO_H
 
 #include "editor.h"
 

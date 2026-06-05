@@ -1,6 +1,6 @@
 #include "buffer_baris.h"
 #include "HaikalBufferNode.h"
-#include "buffer_karakter.h"
+#include "SalmanBufferKarakter.h"
 
 // Memulai editor baru dengan 1 baris kosong
 void buat_editor(Editor *ed) {
