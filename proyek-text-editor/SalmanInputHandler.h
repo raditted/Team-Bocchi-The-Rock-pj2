@@ -1,5 +1,5 @@
-#ifndef INPUT_HANDLER_H
-#define INPUT_HANDLER_H
+#ifndef SALMAN_INPUT_HANDLER_H
+#define SALMAN_INPUT_HANDLER_H
 
 #include "editor.h"
 

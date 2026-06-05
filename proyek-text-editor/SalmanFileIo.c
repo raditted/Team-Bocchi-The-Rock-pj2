@@ -1,18 +1,32 @@
-#include "file_io.h"
+#include "SalmanFileIo.h"
 #include "buffer_baris.h"
-#include "buffer_karakter.h"
+#include "SalmanBufferKarakter.h"
+
+int nama_valid(const char *s) {
+    for (int i = 0; s[i]; i++) {
+        char c = s[i];
+        if (c == '/' || c == '\\' || c == ':' || c == '*' ||
+            c == '?' || c == '"' || c == '<' || c == '>' || c == '|')
+            return 0;
+    }
+    return 1;
+}
 
 void simpan_file(Editor *ed) {
   if (strlen(ed->nama_file) == 0) {
-    system("cls");
-    printf("Masukkan nama file untuk menyimpan: ");
-    fgets(ed->nama_file, 260, stdin);
-    ed->nama_file[strcspn(ed->nama_file, "\n")] = 0;
-  }
+    do {
+      system("cls");
+      printf("Masukkan nama file untuk menyimpan: ");
+      fgets(ed->nama_file, 260, stdin);
+      ed->nama_file[strcspn(ed->nama_file, "\n")] = 0;
 
-  FILE *fp = fopen(ed->nama_file, "w");
-  if (!fp)
-    return;
+      if (!nama_valid(ed->nama_file)) {
+        printf("Nama file tidak boleh mengandung: / \\ : * ? \" < > |\n");
+        ed->nama_file[0] = '\0'; // reset biar loop ulang
+        system("pause");
+      }
+    } while (!nama_valid(ed->nama_file) || strlen(ed->nama_file) == 0);
+  }
 
   // Tulis ke file per LineNode, lalu per CharNode
   LineNode *baris = ed->head;

@@ -1,7 +1,7 @@
-#include "input_handler.h"
+#include "SalmanInputHandler.h"
 #include "buffer_baris.h"
-#include "buffer_karakter.h"
-#include "file_io.h"
+#include "SalmanBufferKarakter.h"
+#include "SalmanFileIo.h"
 #include "navigasi.h"
 #include "tampilan.h"
 
@@ -78,7 +78,7 @@ void run_main_menu(Editor *ed) {
     } else if (choice == '2') {
       char fname[260];
       system("cls");
-      printf("\nMasukkan nama file: ");
+      printf("\nMasukkan nama file yang ingin dibuka: ");
       fgets(fname, 260, stdin);
       fname[strcspn(fname, "\n")] = 0; // Hapus karakter \n di akhir
 
