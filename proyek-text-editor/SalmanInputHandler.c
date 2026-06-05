@@ -3,7 +3,7 @@
 #include "SalmanBufferKarakter.h"
 #include "SalmanFileIo.h"
 #include "navigasi.h"
-#include "tampilan.h"
+#include "HaikalTampilan.h"
 
 void handle_input(Editor *ed) {
   int ch;
