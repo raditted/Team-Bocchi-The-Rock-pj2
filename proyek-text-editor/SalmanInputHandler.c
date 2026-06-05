@@ -75,7 +75,7 @@ void run_main_menu(Editor *ed) {
     if (choice == '1') {
       reset_editor(ed);
       handle_input(ed);
-    } } else if (choice == '2') {
+    } else if (choice == '2') {
       char fname[260];
       system("cls");
       printf("\nMasukkan nama file yang ingin dibuka: ");
