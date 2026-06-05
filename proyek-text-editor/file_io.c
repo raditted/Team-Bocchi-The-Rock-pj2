@@ -1,63 +1,81 @@
-#include "editor_controller.h"
+#include "file_io.h"
+#include "buffer_baris.h"
+#include "buffer_karakter.h"
 
-void save_to_file(Editor *ed) {
-    if (strlen(ed->filename) == 0) ask_filename(ed->filename, 260);
-    FILE *fp = fopen(ed->filename, "w");
-    if (!fp) return;
-    for (int i = 0; i < ed->line_count; i++) {
-        fprintf(fp, "%s\n", ed->lines[i]);
+void simpan_file(Editor *ed) {
+  if (strlen(ed->nama_file) == 0) {
+    system("cls");
+    printf("Masukkan nama file untuk menyimpan: ");
+    fgets(ed->nama_file, 260, stdin);
+    ed->nama_file[strcspn(ed->nama_file, "\n")] = 0;
+  }
+
+  FILE *fp = fopen(ed->nama_file, "w");
+  if (!fp)
+    return;
+
+  // Tulis ke file per LineNode, lalu per CharNode
+  LineNode *baris = ed->head;
+  while (baris != NULL) {
+    CharNode *c = baris->head_char;
+    while (c != NULL) {
+      fputc(c->data, fp);
+      c = c->next;
     }
-    fclose(fp);
-    ed->is_modified = 0;
+    fputc('\n', fp); // Berikan newline sebagai batas antar LineNode
+    baris = baris->next;
+  }
+
+  fclose(fp);
+  ed->sudah_diubah = 0;
 }
 
-void load_from_file(Editor *ed, const char *filename) {
-    FILE *fp = fopen(filename, "r");
-    if (!fp) return;
-    
-    create_editor(ed);
-    strcpy(ed->filename, filename);
-    
-    char buffer[MAX_COLS * 2];
-    while (fgets(buffer, sizeof(buffer), fp)) {
-        buffer[strcspn(buffer, "\n")] = 0;
-        
-        // Load karakter satu per satu 
-        for(int i = 0; buffer[i] != '\0'; i++) {
-            insert_char(ed, buffer[i]);
-        }
-        // jika load file sudah mentok
-        if (!is_buffer_full(ed)) {
-            insert_line(ed);
-        }
-    }
-    
-    if (ed->line_lengths[ed->cursor_row] == 0 && ed->line_count > 1) {
-        delete_current_line(ed);
-        ed->cursor_row--;
-    }
-    
-    reset_cursor_to_top(ed);
-    ed->is_modified = 0;
-    fclose(fp);
-}
+void buka_file(Editor *ed, const char *nama) {
+  FILE *fp = fopen(nama, "r");
+  if (!fp)
+    return;
 
-void delete_physical_file(Editor *ed) {
-    char target_file[260];
-    
-    // 1. Panggil UI untuk menanyakan nama file yang ingin dihapus
-    ask_filename(target_file, 260); 
-    
-    // 2. Fungsi remove() bawaan C akan mereturn 0 jika file sukses terhapus
-    if (remove(target_file) == 0) {
-        printf("\n[SUKSES] File '%s' berhasil dihapus dari komputer.\n", target_file);
-        
-        // 3. Jika file yang dihapus kebetulan sedang terbuka di editor saat ini, reset statusnya
-        if (strcmp(ed->filename, target_file) == 0) {
-            ed->filename[0] = '\0';
-            ed->is_modified = 1;
-        }
+  // Bersihkan isi editor saat ini
+  reset_editor(ed);
+  strcpy(ed->nama_file, nama);
+
+  int ch;
+  // Baca karakter satu demi satu dari file
+  while ((ch = fgetc(fp)) != EOF) {
+    if (ch == '\n') {
+      // Jika bertemu karakter Enter/Newline, buat LineNode baru
+      sisip_baris_baru(ed);
     } else {
-        printf("\n[GAGAL] File '%s' tidak ditemukan atau sistem menolak akses!\n", target_file);
+      // Jika huruf biasa, simpan sebagai CharNode
+      sisip_karakter(ed, (char)ch);
     }
+  }
+
+  // Kembalikan kursor ke baris paling atas
+  ed->cursor_line = ed->head;
+  ed->cursor_char = NULL;
+  ed->cursor_row_idx = 0;
+  ed->cursor_col_idx = 0;
+
+  fclose(fp);
+  ed->sudah_diubah = 0;
+}
+
+void hapus_file_fisik(Editor *ed) {
+  char target[260];
+  system("cls");
+  printf("\nMasukkan nama file yang ingin dihapus dari disk: ");
+  fgets(target, 260, stdin);
+  target[strcspn(target, "\n")] = 0;
+
+  if (remove(target) == 0) {
+    printf("\nFile '%s' berhasil dihapus.\n", target);
+    // Jika kebetulan file yang dihapus sedang dibuka di memori, reset namanya
+    if (strcmp(ed->nama_file, target) == 0) {
+      ed->nama_file[0] = '\0';
+      ed->sudah_diubah = 1;
+    }
+  } else {
+    printf("\nGagal menghapus file '%s' (mungkin tidak ditemukan).\n", target);
+  }
 }
