@@ -94,56 +94,67 @@ Dokumen direpresentasikan sebagai dua lapis Doubly Linked List yang saling terhu
 Lapis pertama adalah rantai **LineNode** (vertikal) yang merepresentasikan baris-baris dokumen.
 Setiap LineNode memiliki rantai **CharNode** (horizontal) yang merepresentasikan karakter-karakter di dalam baris tersebut.
 
+Contoh dokumen berisi 3 baris dengan isi "Hai", "Ok", dan baris kosong:
+
 ```
+  [ STRUKTUR VERTIKAL ]              [ STRUKTUR HORIZONTAL ]
+    (Kumpulan Baris)                   (Kumpulan Karakter)
 
-Editor
-|
-v
-head ──────────────────────────────────────────────────── tail
-| |
-v v
-
-LineNode 0 <─────prev/next─────> LineNode 1 <───prev/next───> LineNode 2
-| | |
-| head_char tail_char | head_char tail_char | head_char tail_char
-v v v v v v
-CharNode<->CharNode<->CharNode CharNode<->CharNode CharNode<->CharNode
-[ H ] [ e ] [ l ] [ W ] [ o ] [ ! ] [ ? ]
-
+    +------------------+          +---------+  +---------+  +---------+
+    | LineNode (Baris 1)|         |   'H'   |  |   'a'   |  |   'i'   |
+    | head_char     -------->    | prev:N  |<-->| prev    |<-->| prev  |
+    | tail_char       --|--+     | next    |  | next    |  | next:N  |
+    | prev: NULL     |  | |     +---------+  +---------+  +---------+
+    | next: Line 2   |  | |                                     ^
+    +------------------+  | +------(tail_char menunjuk 'i')-----+
+          |               |
+          | next          | prev
+          v               |
+    +------------------+          +---------+  +---------+
+    | LineNode (Baris 2)|         |   'O'   |  |   'k'   |
+    | head_char     -------->    | prev:N  |<-->| prev    |
+    | tail_char       --|--+     | next    |  | next:N  |
+    | prev: Line 1   |  | |     +---------+  +---------+
+    | next: Line 3   |  | |                        ^
+    +------------------+  | +---(tail_char 'k')----+
+          |               |
+          | next          | prev
+          v               |
+    +------------------+
+    | LineNode (Baris 3)|  head: NULL (Karakter Kosong)
+    | prev: Line 2   |  tail: NULL
+    | next: NULL     |  panjang: 0
+    +------------------+
 ```
 
 ### Detail Node
 
 ```
-
-CharNode LineNode
-+--------+ +-------------+
-| data | (1 karakter) | head_char | --> CharNode pertama
-| *prev | <-- node kiri | tail_char | --> CharNode terakhir
-| *next | --> node kanan | panjang | jumlah karakter
-+--------+ | *prev | <-- baris atas
-| *next | --> baris bawah
-+-------------+
-
+  CharNode (menyimpan 1 huruf)        LineNode (menyimpan 1 baris)
+  +--------+                          +-------------+
+  | data   |  karakter tunggal        | head_char   | --> CharNode pertama
+  | *prev  |  <-- node kiri           | tail_char   | --> CharNode terakhir
+  | *next  |  --> node kanan          | panjang     |  jumlah karakter
+  +--------+                          | *prev       | <-- baris atas
+                                      | *next       | --> baris bawah
+                                      +-------------+
 ```
 
 ### Struct Editor
 
 ```
-
-Editor
-+----------------+
-| *head | --> LineNode pertama dokumen
-| *tail | --> LineNode terakhir dokumen
-| *cursor_line | --> LineNode tempat kursor berada
-| *cursor_char | --> CharNode di belakang kursor (NULL jika di awal baris)
-| cursor_row_idx | indeks baris logika (0-indexed)
-| cursor_col_idx | indeks kolom logika (0-indexed)
-| scroll_offset | baris pertama yang ditampilkan di layar
-| sudah_diubah | flag modifikasi (0 atau 1)
-| nama_file[25] | nama file yang sedang dibuka
-+----------------+
-
+  Editor (struct utama pengendali)
+  +------------------+
+  | *head            | --> LineNode pertama dokumen
+  | *tail            | --> LineNode terakhir dokumen
+  | *cursor_line     | --> LineNode tempat kursor berada
+  | *cursor_char     | --> CharNode di belakang kursor (NULL = awal baris)
+  | cursor_row_idx   |  indeks baris logika (0-indexed)
+  | cursor_col_idx   |  indeks kolom logika (0-indexed)
+  | scroll_offset    |  baris pertama yang ditampilkan di layar
+  | sudah_diubah     |  flag modifikasi (0 atau 1)
+  | nama_file[25]    |  nama file yang sedang dibuka
+  +------------------+
 ```
 
 ---
@@ -228,155 +239,145 @@ Editor
 ### Startup
 
 ```
-
 Program dimulai (main.c)
-|
-v
-buat_editor() --> Alokasi 1 LineNode kosong di heap
-| Inisialisasi semua pointer dan indeks ke nilai awal
-v
-run_main_menu() --> Tampilkan menu utama
-
+        |
+        v
+buat_editor()  -->  Alokasi 1 LineNode kosong di heap
+        |            Inisialisasi semua pointer dan indeks ke nilai awal
+        v
+run_main_menu()  -->  Tampilkan menu utama
 ```
 
 ### Menu Utama
 
 ```
-
 run_main_menu()
-|
-+--- [1] Buat File Baru
-| |
-| v
-| reset_editor() --> Bebaskan memori lama, buat ulang dari awal
-| |
-| v
-| handle_input() --> Masuk ke loop editor
-|
-+--- [2] Buka File
-| |
-| v
-| Validasi file ada --> Jika tidak ada, tampilkan pesan error
-| |
-| v
-| buka_file() --> Reset editor, baca file karakter per karakter
-| | Setiap karakter biasa: sisip_karakter()
-| | Setiap newline: sisip_baris_baru()
-| v
-| handle_input() --> Masuk ke loop editor
-|
-+--- [3] Hapus File Fisik
-| |
-| v
-| hapus_file_fisik() --> remove() dari disk
-|
-+--- [4] Keluar
-|
-v
-Konfirmasi jika ada perubahan belum disimpan
-|
-v
-free_line_nodes() --> Bebaskan seluruh memori DLL
-|
-v
-Program selesai (return 0)
-
+        |
+        +--- [1] Buat File Baru
+        |         |
+        |         v
+        |    reset_editor()  -->  Bebaskan memori lama, buat ulang dari awal
+        |         |
+        |         v
+        |    handle_input()  -->  Masuk ke loop editor
+        |
+        +--- [2] Buka File
+        |         |
+        |         v
+        |    Validasi file ada  -->  Jika tidak ada, tampilkan pesan error
+        |         |
+        |         v
+        |    buka_file()  -->  Reset editor, baca file karakter per karakter
+        |         |            Setiap karakter biasa: sisip_karakter()
+        |         |            Setiap newline: sisip_baris_baru()
+        |         v
+        |    handle_input()  -->  Masuk ke loop editor
+        |
+        +--- [3] Hapus File Fisik
+        |         |
+        |         v
+        |    hapus_file_fisik()  -->  remove() dari disk
+        |
+        +--- [4] Keluar
+                  |
+                  v
+             Konfirmasi jika ada perubahan belum disimpan
+                  |
+                  v
+             free_line_nodes()  -->  Bebaskan seluruh memori DLL
+                  |
+                  v
+             Program selesai (return 0)
 ```
 
 ### Loop Editor (handle_input)
 
 ```
-
 handle_input()
-|
-v
-+---> tampilkan_editor() --> Render layar
-| |
-| +-- atur_scroll() : Hitung scroll_offset
-| +-- Cetak header : Judul editor
-| +-- Cetak konten : Baris-baris dengan soft-wrap
-| +-- Cetak footer : Status bar dan shortcut
-| +-- Posisikan kursor : Hitung posisi visual dari posisi logika
-| |
-| v
-| \_getch() --> Baca 1 tombol dari keyboard
-| |
-| +--- Karakter cetak (32-126) --> sisip_karakter()
-| +--- Enter (13) --> sisip_baris_baru()
-| +--- Backspace (8) --> hapus_karakter()
-| +--- Arrow keys (0/224 + kode) --> kursor_atas/bawah/kiri/kanan()
-| +--- Ctrl+S (19) --> simpan_file()
-| +--- Ctrl+D (4) --> hapus_baris_penuh()
-| +--- ESC (27) --> Konfirmasi keluar
-| |
-+--------<+ (kembali ke render)
-
+        |
+        v
+   +---> tampilkan_editor()  -->  Render layar
+   |         |
+   |         +-- atur_scroll()    : Hitung scroll_offset
+   |         +-- Cetak header     : Judul editor
+   |         +-- Cetak konten     : Baris-baris dengan soft-wrap
+   |         +-- Cetak footer     : Status bar dan shortcut
+   |         +-- Posisikan kursor : Hitung posisi visual dari posisi logika
+   |         |
+   |         v
+   |    _getch()  -->  Baca 1 tombol dari keyboard
+   |         |
+   |         +--- Karakter cetak (32-126)  -->  sisip_karakter()
+   |         +--- Enter (13)               -->  sisip_baris_baru()
+   |         +--- Backspace (8)            -->  hapus_karakter()
+   |         +--- Arrow keys (0/224 + kode) --> kursor_atas/bawah/kiri/kanan()
+   |         +--- Ctrl+S (19)              -->  simpan_file()
+   |         +--- Ctrl+D (4)               -->  hapus_baris_penuh()
+   |         +--- ESC (27)                 -->  Konfirmasi keluar
+   |         |
+   +--------<+ (kembali ke render)
 ```
 
 ### Proses Penyisipan Karakter
 
 ```
-
 sisip_karakter('A')
-|
-v
-buat_char_node('A') --> malloc(sizeof(CharNode))
-| Inisialisasi data='A', prev=NULL, next=NULL
-v
+        |
+        v
+buat_char_node('A')  -->  malloc(sizeof(CharNode))
+        |                  Inisialisasi data='A', prev=NULL, next=NULL
+        v
 Cek posisi kursor:
-|
-+--- cursor_char == NULL (awal baris)
-| |
-| v
-| Sisip di depan head_char
-| baru->next = head_char
-| head_char->prev = baru
-| head_char = baru
-|
-+--- cursor_char != NULL (tengah/akhir)
-|
-v
-Sisip setelah cursor_char
-baru->prev = cursor_char
-baru->next = cursor_char->next
-cursor_char->next = baru
-|
-v
-cursor_char = baru (kursor maju)
-cursor_col_idx++ (kolom bertambah)
-baris->panjang++ (panjang bertambah)
-sudah_diubah = 1 (tandai modifikasi)
-
+        |
+        +--- cursor_char == NULL (awal baris)
+        |         |
+        |         v
+        |    Sisip di depan head_char
+        |    baru->next = head_char
+        |    head_char->prev = baru
+        |    head_char = baru
+        |
+        +--- cursor_char != NULL (tengah/akhir)
+                  |
+                  v
+             Sisip setelah cursor_char
+             baru->prev = cursor_char
+             baru->next = cursor_char->next
+             cursor_char->next = baru
+        |
+        v
+cursor_char = baru    (kursor maju)
+cursor_col_idx++      (kolom bertambah)
+baris->panjang++      (panjang bertambah)
+sudah_diubah = 1      (tandai modifikasi)
 ```
 
 ### Proses Scroll
 
 ```
-
 atur_scroll()
-|
-v
-Kursor di atas layar? --> scroll_offset = cursor_row_idx
-|
-v
+        |
+        v
+Kursor di atas layar?  --> scroll_offset = cursor_row_idx
+        |
+        v
 Hitung baris visual dari scroll_offset sampai kursor
-|
-+--- Total <= maks (19)? --> Sudah muat, selesai
-|
-+--- Total > maks? --> scroll_offset++ (geser ke bawah)
-| Ulangi perhitungan
-v
+        |
+        +--- Total <= maks (19)?  -->  Sudah muat, selesai
+        |
+        +--- Total > maks?  -->  scroll_offset++ (geser ke bawah)
+        |                        Ulangi perhitungan
+        v
 Cek ruang kosong di bawah
-|
-+--- Hitung visual dari scroll_offset sampai akhir dokumen
-|
-+--- Jika ada ruang, coba tarik scroll ke atas
-| Cek apakah baris di atas scroll_offset muat ditambahkan
-| Jika muat: scroll_offset--, tambah visual
-| Jika tidak: berhenti
-v
+        |
+        +--- Hitung visual dari scroll_offset sampai akhir dokumen
+        |
+        +--- Jika ada ruang, coba tarik scroll ke atas
+        |    Cek apakah baris di atas scroll_offset muat ditambahkan
+        |    Jika muat: scroll_offset--, tambah visual
+        |    Jika tidak: berhenti
+        v
 Selesai
-
 ```
 
 ---
@@ -386,15 +387,11 @@ Selesai
 ### Windows (MinGW GCC)
 
 ```
-
 gcc -o bocchi main.c HaikalBufferNode.c HaikalTampilan.c RaditBufferBaris.c RaditNavigasi.c SalmanBufferKarakter.c SalmanFileIo.c SalmanInputHandler.c -Wall
-
 ```
 
 ```
-
 .\bocchi.exe
-
 ```
 
 ### Linux (GCC)
