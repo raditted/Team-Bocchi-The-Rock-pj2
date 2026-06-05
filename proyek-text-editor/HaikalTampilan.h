@@ -12,5 +12,6 @@ int baris_visual(LineNode *baris);
 void isi_spasi(char *buf, int dari_kolom);
 void tulis_baris(char *buf, const char *teks);
 void tampilkan_editor(Editor *ed);
-
+int hitung_visual(LineNode *head, int dari, int sampai);
+LineNode *lompat_ke_baris(LineNode *head, int n);
 #endif
