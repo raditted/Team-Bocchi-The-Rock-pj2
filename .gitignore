@@ -2,4 +2,3 @@
 .vscode
 cmake-build-debug
 proyek-text-editor/*.o
-proyek-text-editor/*.exe
